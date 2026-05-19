@@ -1,0 +1,79 @@
+{
+  "name": "convex-simple-auth",
+  "version": "0.1.0",
+  "description": "Minimal JWT-based email/password + anonymous auth for Convex. ~170 LoC, one dep (jose), no HTTP routes.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/obask/convex-simple-auth.git"
+  },
+  "files": [
+    "dist",
+    "scripts",
+    "templates",
+    "README.md"
+  ],
+  "exports": {
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    },
+    "./auth": {
+      "types": "./dist/auth.d.ts",
+      "import": "./dist/auth.js"
+    },
+    "./users": {
+      "types": "./dist/users.d.ts",
+      "import": "./dist/users.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js"
+    },
+    "./solid": {
+      "types": "./dist/solid.d.ts",
+      "import": "./dist/solid.js"
+    },
+    "./token-store": {
+      "types": "./dist/token-store.d.ts",
+      "import": "./dist/token-store.js"
+    }
+  },
+  "bin": {
+    "convex-simple-auth-keys": "scripts/setup-auth-keys.mjs"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "release": "bash scripts/release.sh"
+  },
+  "peerDependencies": {
+    "convex": ">=1.20.0",
+    "jose": ">=5.0.0",
+    "react": ">=18.0.0",
+    "solid-js": ">=1.8.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "solid-js": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.0",
+    "@types/react": "^19.2.14",
+    "convex": "^1.39.1",
+    "jose": "^6.2.3",
+    "react": "^19.2.6",
+    "solid-js": "^1.9.13",
+    "typescript": "^6.0.3"
+  },
+  "packageManager": "pnpm@11.1.2",
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  }
+}
