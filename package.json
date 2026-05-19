@@ -48,17 +48,24 @@
     "solid-js": ">=1.8.0"
   },
   "peerDependenciesMeta": {
-    "react": { "optional": true },
-    "solid-js": { "optional": true }
+    "react": {
+      "optional": true
+    },
+    "solid-js": {
+      "optional": true
+    }
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
-    "@types/react": "^19.0.0",
-    "convex": "^1.39.0",
-    "jose": "^6.0.0",
-    "react": "^19.0.0",
-    "solid-js": "^1.9.0",
-    "typescript": "^5.6.0"
+    "@types/node": "^25.9.0",
+    "@types/react": "^19.2.14",
+    "convex": "^1.39.1",
+    "jose": "^6.2.3",
+    "react": "^19.2.6",
+    "solid-js": "^1.9.13",
+    "typescript": "^6.0.3"
   },
-  "packageManager": "pnpm@9.0.0"
+  "packageManager": "pnpm@11.1.2",
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  }
 }

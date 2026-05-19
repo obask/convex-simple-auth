@@ -36,7 +36,6 @@ export default defineSchema({
 Paste verbatim. The `JWKS:BEGIN`/`JWKS:END` markers let the keygen script rewrite the public JWK in place.
 
 ```ts
-/// <reference types="node" />
 import type { AuthConfig } from "convex/server";
 
 // JWKS:BEGIN (do not edit; rewritten by convex-simple-auth-keys)
@@ -56,8 +55,7 @@ const JWKS = {
 // JWKS:END
 
 const jwksDataUri =
-  "data:application/json;base64," +
-  Buffer.from(JSON.stringify(JWKS)).toString("base64");
+  "data:application/json;base64," + btoa(JSON.stringify(JWKS));
 
 export default {
   providers: [
