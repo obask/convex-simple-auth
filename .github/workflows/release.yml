@@ -1,0 +1,67 @@
+name: release
+
+# Every push to main rebuilds the dist branch. No tagging step required —
+# whatever lands on main is what consumers installing `#dist` will get.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-dist
+  cancel-in-progress: false
+
+jobs:
+  publish-dist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # need full history to orphan-checkout dist
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
+
+      - name: Force-push dist branch
+        env:
+          SHA: ${{ github.sha }}
+          SHORT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Stash the built dist/ outside the worktree so the orphan checkout
+          # can't clobber or nest it.
+          TMP="$(mktemp -d)"
+          mv dist "$TMP/dist"
+
+          git checkout --orphan dist-tmp
+          git rm -rf --quiet . || true
+
+          # Restore consumer-facing files from the source commit, then drop
+          # the freshly-built dist/ back in.
+          git checkout "$SHA" -- scripts templates package.json README.md LICENSE 2>/dev/null \
+            || git checkout "$SHA" -- scripts templates package.json README.md
+          mv "$TMP/dist" ./dist
+
+          git add -f dist
+          git add scripts templates package.json README.md
+          [ -f LICENSE ] && git add LICENSE || true
+
+          SHORT="$(git rev-parse --short "$SHA")"
+          git commit -m "build: release from main @ $SHORT"
+          git branch -M dist
+          git push -f origin dist
