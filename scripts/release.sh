@@ -25,21 +25,24 @@ echo "[release] Building from $SOURCE_BRANCH @ $SOURCE_SHA"
 pnpm run clean
 pnpm run build
 
-# Stash the built dist/ outside the worktree so we can hop branches cleanly.
+# Stash the built dist/ outside the worktree so the orphan checkout can't
+# clobber or nest it.
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
-cp -R dist "$TMP/dist"
+mv dist "$TMP/dist"
 
 # Recreate the dist branch from scratch (orphan = no history bloat).
 git checkout --orphan "$DIST_BRANCH-tmp"
 git rm -rf --quiet . || true
 
-# Copy built output + everything consumers need.
-cp -R "$TMP/dist" ./dist
+# Restore consumer-facing files from the source branch, then drop the built
+# dist back in.
 git checkout "$SOURCE_BRANCH" -- scripts templates package.json README.md LICENSE 2>/dev/null || \
   git checkout "$SOURCE_BRANCH" -- scripts templates package.json README.md
+mv "$TMP/dist" ./dist
 
-git add dist scripts templates package.json README.md
+git add -f dist
+git add scripts templates package.json README.md
 [ -f LICENSE ] && git add LICENSE || true
 
 git commit -m "build: release from $SOURCE_BRANCH @ $SOURCE_SHA"
