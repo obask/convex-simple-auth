@@ -22,6 +22,14 @@
     "./react": {
       "types": "./dist/react.d.ts",
       "import": "./dist/react.js"
+    },
+    "./solid": {
+      "types": "./dist/solid.d.ts",
+      "import": "./dist/solid.js"
+    },
+    "./token-store": {
+      "types": "./dist/token-store.d.ts",
+      "import": "./dist/token-store.js"
     }
   },
   "bin": {
@@ -36,10 +44,12 @@
   "peerDependencies": {
     "convex": ">=1.20.0",
     "jose": ">=5.0.0",
-    "react": ">=18.0.0"
+    "react": ">=18.0.0",
+    "solid-js": ">=1.8.0"
   },
   "peerDependenciesMeta": {
-    "react": { "optional": true }
+    "react": { "optional": true },
+    "solid-js": { "optional": true }
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
@@ -47,6 +57,7 @@
     "convex": "^1.39.0",
     "jose": "^6.0.0",
     "react": "^19.0.0",
+    "solid-js": "^1.9.0",
     "typescript": "^5.6.0"
   },
   "packageManager": "pnpm@9.0.0"

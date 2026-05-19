@@ -171,9 +171,10 @@ Commit the resulting `convex/auth.config.ts`. Public keys are safe to commit.
 
 ## Client wiring
 
+### React
+
 ```tsx
-import { ConvexReactClient } from "convex/react";
-import { ConvexProviderWithAuth } from "convex/react";
+import { ConvexReactClient, ConvexProviderWithAuth } from "convex/react";
 import { useAuth } from "convex-simple-auth/react";
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL);
@@ -182,6 +183,28 @@ const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL);
   <App />
 </ConvexProviderWithAuth>;
 ```
+
+### SolidJS
+
+```tsx
+import { useAuth } from "convex-simple-auth/solid";
+
+// Feed `useAuth` into whichever Solid Convex client you use; it returns the
+// same `{ isLoading, isAuthenticated, fetchAccessToken }` shape Convex auth
+// providers expect.
+```
+
+### Framework-free
+
+If neither binding fits, import the store directly and write your own hook:
+
+```ts
+import { tokenStore, subscribe } from "convex-simple-auth/token-store";
+```
+
+`/react`, `/solid`, and `/token-store` are separate subpath exports — each one
+is its own file. Importing `/react` never pulls in `solid-js`, and vice versa.
+
 
 Sign-in / sign-out:
 

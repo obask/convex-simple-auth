@@ -1,46 +1,15 @@
 /**
- * Client-side token store + React hook for `ConvexProviderWithAuth`.
+ * React binding for the Convex JWT store.
  *
  *   import { ConvexProviderWithAuth } from "convex/react";
  *   import { useAuth } from "convex-simple-auth/react";
  *
- *   <ConvexProviderWithAuth client={convex} useAuth={useAuth}>
- *     ...
- *   </ConvexProviderWithAuth>
+ *   <ConvexProviderWithAuth client={convex} useAuth={useAuth}>...</...>
  */
 import { useCallback, useSyncExternalStore } from "react";
+import { subscribe, tokenStore } from "./token-store.js";
 
-const KEY = "convex_jwt";
-const listeners = new Set<() => void>();
-const emit = () => {
-  for (const l of listeners) l();
-};
-
-if (typeof window !== "undefined") {
-  window.addEventListener("storage", (e) => {
-    if (e.key === KEY) emit();
-  });
-}
-
-export const tokenStore = {
-  get: (): string | null =>
-    typeof window === "undefined" ? null : window.localStorage.getItem(KEY),
-  set: (token: string) => {
-    window.localStorage.setItem(KEY, token);
-    emit();
-  },
-  clear: () => {
-    window.localStorage.removeItem(KEY);
-    emit();
-  },
-};
-
-const subscribe = (l: () => void) => {
-  listeners.add(l);
-  return () => {
-    listeners.delete(l);
-  };
-};
+export { tokenStore };
 
 export function useAuth() {
   const token = useSyncExternalStore(subscribe, tokenStore.get, () => null);
